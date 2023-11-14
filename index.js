@@ -5,12 +5,14 @@ import 'dotenv/config'
 const app = express();
 const port =  process.env.PORT || 7001
 //middleware
-app.use(cors());
+
+
+app.use(cors())
+
 app.use(express.json());
-//nexus-build-server
-//yta1oamFeGSKFBi4
+
 //connect to mongodb server
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.fo1holf.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.DB_User}:${process.env.DB_PASSWORD}@cluster0.fo1holf.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
