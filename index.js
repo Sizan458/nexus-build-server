@@ -27,6 +27,8 @@ async function run() {
   try {
     // Create a  database collection
     const All_Services = client.db("nexus-build-server").collection("all-services");
+    //category database collection
+    const Category  = client.db("nexus-build-server").collection("category");
     // insert a data to the database
     app.post("/all-services",async(req,res) => {
       const services = req.body
@@ -45,6 +47,27 @@ async function run() {
         _id : new ObjectId(id),
       }
       const result = await All_Services.findOne(query);
+      res.send(result);
+    })
+    // category api
+    // insert a data to the database
+    app.post("/category",async(req,res) => {
+      const category = req.body
+      const result = await Category.insertOne(category)
+      res.send(result)
+    })
+    //read all data
+    app.get("/category",async(req,res) => {
+      const result = await Category.find().toArray();
+      res.send(result)
+    });
+    //read  data by id
+    app.get("/category/:id",async(req,res)=>{
+      const id= req.params.id;
+      const  query ={
+        _id : new ObjectId(id),
+      }
+      const result = await Category.findOne(query);
       res.send(result);
     })
       // Connect the client to the server	(optional starting in v4.7)
