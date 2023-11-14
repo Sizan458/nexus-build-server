@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { MongoClient, ServerApiVersion } from 'mongodb';
+import { MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
 import 'dotenv/config'
 const app = express();
 const port =  process.env.PORT || 7001
@@ -10,8 +10,6 @@ app.use(express.json());
 //nexus-build-server
 //yta1oamFeGSKFBi4
 //connect to mongodb server
-
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.fo1holf.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -25,7 +23,29 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    console.log(process.env.DB_USER)    // Connect the client to the server	(optional starting in v4.7)
+    // Create a  database collection
+    const All_Services = client.db("nexus-build-server").collection("all-services");
+    // insert a data to the database
+    app.post("/all-services",async(req,res) => {
+      const services = req.body
+      const result = await All_Services.insertOne(services)
+      res.send(result)
+    })
+    //read all data
+    app.get("/all-services",async(req,res) => {
+      const result = await All_Services.find().toArray();
+      res.send(result)
+    });
+    //read  data by id
+    app.get("/all-services/:id",async(req,res)=>{
+      const id= req.params.id;
+      const  query ={
+        _id : new ObjectId(id),
+      }
+      const result = await All_Services.findOne(query);
+      res.send(result);
+    })
+      // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
