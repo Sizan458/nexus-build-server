@@ -29,6 +29,8 @@ async function run() {
     const All_Services = client.db("nexus-build-server").collection("all-services");
     //category database collection
     const Category  = client.db("nexus-build-server").collection("category");
+    //user database
+    const Order = client.db("nexus-build-server").collection("order");
     // insert a data to the database
     app.post("/all-services",async(req,res) => {
       const services = req.body
@@ -37,7 +39,15 @@ async function run() {
     })
     //read all data
     app.get("/all-services",async(req,res) => {
-      const result = await All_Services.find().toArray();
+     //sorting by category
+     let query ={}
+  const category = req.query.category;
+  console.log(category)
+  if(category){
+    query.category = category;
+  }
+console.log(query)
+      const result = await All_Services.find(query).toArray();
       res.send(result)
     });
     //read  data by id
@@ -70,6 +80,19 @@ async function run() {
       const result = await Category.findOne(query);
       res.send(result);
     })
+    //order api
+    // insert a data to the database
+    app.post("/order",async(req,res) => {
+      const order = req.body
+      const result = await Order.insertOne(order)
+      res.send(result)
+    })
+    //read all data
+    app.get("/order",async(req,res) => {
+      const result = await Order.find().toArray();
+      res.send(result)
+    });
+
       // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     // Send a ping to confirm a successful connection
